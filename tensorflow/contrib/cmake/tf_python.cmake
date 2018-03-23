@@ -683,6 +683,62 @@ AddUserOps(TARGET _beam_search_ops
     DEPENDS pywrap_tensorflow_internal tf_python_ops
     DISTCOPY ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/contrib/seq2seq/python/ops/)
 
+if(WIN32)
+  if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
+    add_custom_command(TARGET pywrap_tensorflow_internal POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/$(Configuration)/pywrap_tensorflow_internal.dll
+                                       ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/_pywrap_tensorflow_internal.pyd
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/$(Configuration)/pywrap_tensorflow_internal.lib
+                                       ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/)
+  else()
+    add_custom_command(TARGET pywrap_tensorflow_internal POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/pywrap_tensorflow_internal.dll
+                                       ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/_pywrap_tensorflow_internal.pyd
+      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/pywrap_tensorflow_internal.lib
+                                       ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/)
+  endif()
+else()
+  add_custom_command(TARGET pywrap_tensorflow_internal POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/libpywrap_tensorflow_internal.so
+                                     ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/_pywrap_tensorflow_internal.so)
+endif()
+
+
+# Parse tensorflow/tools/api/generator/BUILD to get list of generated files.
+FILE(READ ${tensorflow_source_dir}/tensorflow/tools/api/generator/BUILD api_generator_BUILD_text)
+STRING(REGEX MATCH "# BEGIN GENERATED FILES.*# END GENERATED FILES" api_init_files_text ${api_generator_BUILD_text})
+# Replace commas with semicolons to create a list.
+string(REPLACE "# BEGIN GENERATED FILES" "" api_init_files_text1 ${api_init_files_text})
+string(REPLACE "# END GENERATED FILES" "" api_init_files_text2 ${api_init_files_text1})
+string(REPLACE "," ";" api_init_files_list ${api_init_files_text2})
+
+set(api_init_files "")
+set(api_init_files_full "")
+foreach(api_init_file ${api_init_files_list})
+    string(STRIP "${api_init_file}" api_init_file1)
+    if(api_init_file1)
+        string(REPLACE "\"" "" api_init_file2 "${api_init_file1}")
+        list(APPEND api_init_files "${api_init_file2}")
+        list(APPEND api_init_files_full "${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/tools/api/generator/${api_init_file2}")
+    endif()
+endforeach(api_init_file)
+
+# Run create_python_api.py to generate __init__.py files.
+add_custom_command(
+      OUTPUT ${api_init_files_full}
+      DEPENDS tf_python_ops tf_python_copy_scripts_to_destination pywrap_tensorflow_internal tf_python_touchup_modules tf_extension_ops
+      COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}/tf_python ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/tools/api/generator/create_python_api.py" ${api_init_files_full}
+      COMMENT "Generating __init__.py files for Python API."
+      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/tf_python"
+)
+
+
+add_custom_target(tf_python_api SOURCES ${api_init_files_full})
+add_dependencies(tf_python_api tf_python_ops)
+
+
+
+
 ############################################################
 # Build a PIP package containing the TensorFlow runtime.
 ############################################################
@@ -692,6 +748,7 @@ add_dependencies(tf_python_build_pip_package
     tf_python_copy_scripts_to_destination
     tf_python_touchup_modules
     tf_python_ops
+    tf_python_api
     tf_extension_ops)
 
 # Fix-up Python files that were not included by the add_python_module() macros.
@@ -704,25 +761,6 @@ add_custom_command(TARGET tf_python_copy_scripts_to_destination PRE_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy ${tensorflow_source_dir}/tensorflow/contrib/testing/python/framework/util_test.py
                                    ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/contrib/testing/python/framework/)
 
-if(WIN32)
-  if(${CMAKE_GENERATOR} MATCHES "Visual Studio.*")
-    add_custom_command(TARGET tf_python_build_pip_package POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/$(Configuration)/pywrap_tensorflow_internal.dll
-                                       ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/_pywrap_tensorflow_internal.pyd
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/$(Configuration)/pywrap_tensorflow_internal.lib
-                                       ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/)
-  else()
-    add_custom_command(TARGET tf_python_build_pip_package POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/pywrap_tensorflow_internal.dll
-                                       ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/_pywrap_tensorflow_internal.pyd
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/pywrap_tensorflow_internal.lib
-                                       ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/)
-  endif()
-else()
-  add_custom_command(TARGET tf_python_build_pip_package POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/libpywrap_tensorflow_internal.so
-                                     ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/python/_pywrap_tensorflow_internal.so)
-endif()
 add_custom_command(TARGET tf_python_build_pip_package POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy ${tensorflow_source_dir}/tensorflow/tools/pip_package/README
                                    ${CMAKE_CURRENT_BINARY_DIR}/tf_python/)
@@ -817,6 +855,13 @@ add_custom_command(TARGET tf_python_build_pip_package PRE_BUILD
 add_custom_command(TARGET tf_python_build_pip_package POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_BINARY_DIR}/eigen/src/eigen/unsupported/Eigen
                                    ${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/include/unsupported/Eigen)
+
+#add_custom_command(TARGET tf_python_build_pip_package POST_BUILD
+#      COMMAND ${CMAKE_COMMAND} -E env PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}/tf_python ${PYTHON_EXECUTABLE} "${CMAKE_CURRENT_BINARY_DIR}/tf_python/tensorflow/tools/api/generator/create_python_api.py" ${api_init_files}
+#      COMMENT "Generating __init__.py files for Python API."
+#      WORKING_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/tf_python"
+#)
+
 
 if(${tensorflow_TF_NIGHTLY})
   if(${tensorflow_ENABLE_GPU})

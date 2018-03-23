@@ -103,6 +103,7 @@ tensorflow/python/util
 tensorflow/python/util/protobuf
 tensorflow/tools
 tensorflow/tools/graph_transforms
+tensorflow/tools/api/generator
 tensorflow/contrib
 tensorflow/contrib/all_reduce
 tensorflow/contrib/all_reduce/python

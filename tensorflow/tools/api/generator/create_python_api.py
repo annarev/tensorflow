@@ -193,6 +193,7 @@ def create_api_files(output_files):
     ValueError: if an output file is not under api/ directory,
       or output_files list is missing a required file.
   """
+  print('5555: in create_python_api')
   module_name_to_file_path = {}
   for output_file in output_files:
     if _API_DIR not in output_file:
@@ -224,6 +225,7 @@ def create_api_files(output_files):
       missing_output_files.append(module_file_path)
       continue
     with open(module_name_to_file_path[module], 'w') as fp:
+      #print('5555: Writing exports for %s' % str(module))
       fp.write(_GENERATED_FILE_HEADER + '\n'.join(exports))
 
   if missing_output_files:

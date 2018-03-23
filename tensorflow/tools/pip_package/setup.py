@@ -29,7 +29,7 @@ from setuptools.dist import Distribution
 # This version string is semver compatible, but incompatible with pip.
 # For pip, we will remove all '-' characters from this string, and use the
 # result for pip.
-_VERSION = '1.7.0-rc1'
+_VERSION = '1.6.0'
 
 REQUIRED_PACKAGES = [
     'absl-py >= 0.1.6',
@@ -201,6 +201,13 @@ headers = (list(find_files('*.h', 'tensorflow/core')) +
            list(find_files('*.h', 'google/protobuf_archive/src')) +
            list(find_files('*', 'third_party/eigen3')) +
            list(find_files('*', 'external/eigen_archive')))
+
+files = [f for f in os.listdir('./tensorflow/tools/api/generator/api') if os.path.isfile(f)]
+for f in files:
+  print('3333: %s' % f)
+
+with open('./tensorflow/tools/api/generator/api/sets/__init__.py', 'r') as f:
+  print('2222: %s' % f.read())
 
 setup(
     name=project_name,
