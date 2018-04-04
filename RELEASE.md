@@ -1,3 +1,55 @@
+# Release 1.8.0
+
+## Major Features And Improvements
+* Can now pass tf.contrib.distribute.MirroredStrategy() to
+tf.estimator.RunConfig() to run an Estimator model on multiple GPUs
+on one machine.
+
+## Bug Fixes and Other Changes
+* `tf.data`:
+  * Add `tf.contrib.data.AUTOTUNE`, which allows the `tf.data` runtime to automatically tune the prefetch buffer sizes based on your system and environment.
+  * Add `tf.contrib.data.make_csv_dataset` for building datasets of CSV files.
+* Accelerated Linear Algebra (XLA):
+  * Select and scatter in reference util and evaluator now use lexicographical order to break ties.
+* TensorFlow Debugger (tfdbg) CLI:
+  * Fix spurious background colors in some text terminals.
+  * Allow exclusion of nodes by regular expressions.
+* `tf.contrib`:
+  * Add meta-distribution `BatchReshape` which reshapes batch dimensions.
+  * `tf.contrib.layers.recompute_grad` works for explicit gradient checkpointing on TPU.
+  * Add `tf.contrib.data.prefetch_to_device()`, which supports prefetching to GPU memory.
+  * Add tf.contrib.framework.argsort.
+  * Allow `DNNBoostedTreeCombinedEstimator` to work with core versions of feature columns and losses.
+  * Add non-linear image warping ops: `tf.contrib.image.sparse_image_warp`, `tf.contrib.image.dense_image_warp`, and `tf.contrib.image.interpolate_spline`.
+  * Fix bug in `tf.contrib.opt.MultitaskOptimizerWrapper` where types of tensors were mismatched.
+* Other:
+  * Added Gradient Boosted Trees as pre-made Estimators.
+  * Add 3rd generation pipeline config for Cloud TPUs which improves performance and usability.
+  * Add description of shapes and a pointer to tutorial notebook in `tf.distributions.Distribution`.
+  * Update scatter operations:
+      * Add `tf.scatter_min` and `tf.scatter_max`
+      * Extend scatter operations to work with a scalar update parameter.
+  * Move cuDNN RNN ops to core for use in TensorFlow codebase only.
+  * Add `float64` support for `Conv2d`, `Conv2dBackpropInput`, and `Conv2dBackpropFilter`.
+  * Add `float64` support for `AvgPool`/`AvgPoolGrad`.
+  * Make graph name scope thread local so that they work correctly in multi-threaded environments.
+  * Update nsync synchronization library to avoid slow primitives on Linux.
+  * Removed need to put nsync/public on C include path when building custom ops.
+  * `Dataset.make_one_shot_iterator()` and `Dataset.__iter__()` can now be used to create iterators in eager mode.
+  * Add `tf.image.psnr`, `tf.image.ssim`, `tf.image.ssim_multiscale`,
+    `tf.image.image_gradients`, `tf.image.sobel_edges`
+  * ProcFLR: Include the remote function target in the `function_key`.
+  * Add links to https://js.tensorflow.org
+  * Fix non-uniformity of orthogonal matrices.
+  * Fix bug where multi-image Estimator eval summaries were not displayed correctly.
+
+## Thanks to our Contributors
+
+This release contains contributions from many people at Google, as well as:
+
+4d55397500, Aghasy, Alan Du, Alan Lee, Alan Yee, Alex Wiltschko, Animesh Karnewar, Ankit Gupta, Anton Matosov, Aris L, Ben Barsdell, Brent Yi, Brett Koonce, Carl Thomé, cbockman, Chris Tava, CéDric Deltheil, Dahan Gong, Dalmo Cirne, Daniel Erenrich, David Norman, DavidNorman, Edd Wilder-James, Fanjin Zeng, Felix Abecassis, fo40225, George Sterpu, Giovanni Terlingen, Gor Baghdasaryan, Guillaume Klein, Hanchen Li, Jakub Kolodziejczyk, Jason Sadler, Jayaram Bobba, Jerry Liu, jinghuangintel, Jiongyan Zhang (张炯衍), Jong Wook Kim, Julian Eisenschlos, Karl Lessard, Krish Ravindranath, Loo Rong Jie, Lukas Geiger, Luke Iwanski, ManHyuk, Marvin Richter, Maximilian Mitchell, Mohammad Ashraf Bhuiyan, msofka, Mustafa Kasap, Nathan Burnham, Naveen Marri, ngc92, Nick Felt, Oleg Zabluda, Ou Changkun, Panos Ipeirotis, Paul Van Eck, Peter Lee, Piotr Czapla, qjivy, Rholais Lii, Rodrigo Formigone, Russell Klopfer, ryantimjohn, Sami Kama, Sang Han, shengfuintel, Siby Jose Plathottam, Stanislaw Antol, Taehoon Lee, Tarang Chugh, Ted Chang, Xian Xu, Xiaoming (Jason) Cui, yaox12, Yashal Shakti Kanungo, Yong Tang, Yuan (Terry) Tang, Ziyue(Louis) Lu
+
+
 # Release 1.7.0
 
 ## Major Features And Improvements
