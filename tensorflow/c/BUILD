@@ -225,7 +225,7 @@ tf_cuda_library(
     ],
     deps = select({
         "//tensorflow:android": [
-            "//tensorflow/core:portable_tensorflow_lib_lite",  # TODO(annarev): exclude runtime srcs
+            "//tensorflow/core:portable_tensorflow_lib_lite_no_runtime",
         ],
         "//conditions:default": [
             "//tensorflow/core:lib",
@@ -242,7 +242,7 @@ cc_library(
         ":tf_status_internal",
     ] + select({
         "//tensorflow:android": [
-            "//tensorflow/core:portable_tensorflow_lib_lite",  # TODO(annarev): exclude runtime srcs
+            "//tensorflow/core:portable_tensorflow_lib_lite_no_runtime",
         ],
         "//conditions:default": [
             "//tensorflow/core:lib",
@@ -268,7 +268,7 @@ cc_library(
     visibility = ["//tensorflow:internal"],
     deps = select({
         "//tensorflow:android": [
-            "//tensorflow/core:portable_tensorflow_lib_lite",  # TODO(annarev): exclude runtime srcs
+            "//tensorflow/core:portable_tensorflow_lib_lite_no_runtime",
         ],
         "//conditions:default": [
             "//tensorflow/core:lib",
@@ -284,7 +284,7 @@ cc_library(
     visibility = ["//visibility:public"],
     deps = select({
         "//tensorflow:android": [
-            "//tensorflow/core:portable_tensorflow_lib_lite",  # TODO(annarev): exclude runtime srcs
+            "//tensorflow/core:portable_tensorflow_lib_lite_no_runtime",
         ],
         "//conditions:default": [
             "//tensorflow/core:framework",
@@ -306,7 +306,7 @@ cc_library(
         ":tf_tensor_internal",
     ] + select({
         "//tensorflow:android": [
-            "//tensorflow/core:portable_tensorflow_lib_lite",  # TODO(annarev): exclude runtime srcs
+            "//tensorflow/core:portable_tensorflow_lib_lite_no_runtime",
         ],
         "//conditions:default": [
             "//tensorflow/core:framework",
@@ -330,7 +330,7 @@ tf_cuda_library(
         ":tf_status",
     ] + select({
         "//tensorflow:android": [
-            "//tensorflow/core:portable_tensorflow_lib_lite",  # TODO(annarev): exclude runtime srcs
+            "//tensorflow/core:portable_tensorflow_lib_lite_no_runtime",
         ],
         "//conditions:default": [
             "//tensorflow/core:framework",
@@ -402,7 +402,7 @@ tf_cuda_library(
         ":tf_status_internal",
     ] + select({
         "//tensorflow:android": [
-            "//tensorflow/core:portable_tensorflow_lib_lite",  # TODO(annarev): exclude runtime srcs
+            "//tensorflow/core:portable_tensorflow_lib_lite_no_runtime",
         ],
         "//conditions:default": [
             "//tensorflow/core:lib",

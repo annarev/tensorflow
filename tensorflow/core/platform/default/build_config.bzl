@@ -733,6 +733,14 @@ def tf_protobuf_deps():
 def tf_portable_proto_lib():
     return ["//tensorflow/core:protos_all_cc_impl"]
 
+def tf_portable_proto_lib_no_runtime():
+    return [
+        "//tensorflow/core/framework:log_memory_proto_cc",
+        "//tensorflow/core/framework:tensor_proto_cc",
+        "//tensorflow/core/protobuf:error_codes_proto_impl_cc",
+        "//tensorflow/core/example:example_protos_cc",
+    ]
+
 def tf_protobuf_compiler_deps():
     return if_static(
         [

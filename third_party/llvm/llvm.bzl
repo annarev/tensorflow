@@ -202,7 +202,9 @@ posix_cmake_vars = {
     "HAVE_ZLIB_H": 1,
 
     # Features
-    "HAVE_BACKTRACE": 1,
+    # Need to find a way to disable this just for Android
+    # build.
+    # "HAVE_BACKTRACE": 1,
     "BACKTRACE_HEADER": "execinfo.h",
     "HAVE_DLOPEN": 1,
     "HAVE_FUTIMES": 1,

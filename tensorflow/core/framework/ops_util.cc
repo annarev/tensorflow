@@ -13,11 +13,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
 
+#include "tensorflow/core/framework/ops_util.h"
+
 #include <algorithm>
 #include <cmath>
 
-#include "tensorflow/core/framework/attr_value.pb.h"
-#include "tensorflow/core/framework/ops_util.h"
 #include "tensorflow/core/lib/core/errors.h"
 #include "tensorflow/core/lib/strings/str_util.h"
 #include "tensorflow/core/util/padding.h"

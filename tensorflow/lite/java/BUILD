@@ -412,6 +412,9 @@ tflite_jni_binary(
         "//tensorflow/lite/delegates/nnapi/java/src/main/native",
         "//tensorflow/lite/delegates/xnnpack:xnnpack_delegate",
         "//tensorflow/lite/java/src/main/native",
+        "//tensorflow/core/tfrt_fallback/kernel:kernel_fallback_kernels_alwayslink",
+        "//tensorflow/core/tfrt_fallback/kernel/kernels:aggregate_ops",
+        "//tensorflow/core/tfrt_fallback/kernel/kernels:conv_ops_3d",
     ],
 )
 

@@ -28,6 +28,7 @@ load(
     _tf_platform_deps = "tf_platform_deps",
     _tf_portable_deps_no_runtime = "tf_portable_deps_no_runtime",
     _tf_portable_proto_lib = "tf_portable_proto_lib",
+    _tf_portable_proto_lib_no_runtime = "tf_portable_proto_lib_no_runtime",
     _tf_proto_library = "tf_proto_library",
     _tf_proto_library_cc = "tf_proto_library_cc",
     _tf_proto_library_py = "tf_proto_library_py",
@@ -69,6 +70,7 @@ tf_logging_deps = _tf_logging_deps
 tf_platform_alias = _tf_platform_alias
 tf_platform_deps = _tf_platform_deps
 tf_portable_proto_lib = _tf_portable_proto_lib
+tf_portable_proto_lib_no_runtime = _tf_portable_proto_lib_no_runtime
 tf_portable_deps_no_runtime = _tf_portable_deps_no_runtime
 tf_proto_library = _tf_proto_library
 tf_proto_library_cc = _tf_proto_library_cc

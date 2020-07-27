@@ -113,6 +113,7 @@ load(
     "tf_lib_proto_parsing_deps",
     "tf_portable_deps_no_runtime",
     "tf_portable_proto_lib",
+    "tf_portable_proto_lib_no_runtime",
     "tf_proto_library",
     "tf_protos_all_impl",
     "tf_protos_grappler_impl",
@@ -1234,7 +1235,6 @@ filegroup(
     srcs = [
         "//tensorflow/compiler/jit:mobile_srcs_no_runtime",
         "//tensorflow/core/example:mobile_srcs_no_runtime",
-        "//tensorflow/core/framework:attr_value_proto_text_srcs",
         "//tensorflow/core/framework:mobile_srcs_no_runtime",
         "//tensorflow/core/lib/bfloat16:mobile_srcs_no_runtime",
         "//tensorflow/core/lib/core:mobile_srcs_no_runtime",
@@ -1354,6 +1354,23 @@ cc_library(
         "//tensorflow/core/util:stats_calculator_portable",
         "//tensorflow/core:mobile_additional_lib_deps",
     ] + tf_portable_proto_lib() + tf_portable_deps_no_runtime(),
+    alwayslink = 1,
+)
+
+cc_library(
+    name = "portable_tensorflow_lib_lite_no_runtime",
+    srcs = if_mobile([":mobile_srcs_no_runtime"]),
+    copts = tf_copts(android_optimization_level_override = None) + tf_opts_nortti_if_lite_protos() + if_ios(["-Os"]),
+    defines = ["SUPPORT_SELECTIVE_REGISTRATION"] + if_chromiumos(["IS_MOBILE_PLATFORM"]) + tf_defines_nortti_if_lite_protos(),
+    tags = [
+        "manual",
+        "notap",
+    ],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//tensorflow/core/util:stats_calculator_portable",
+        "//tensorflow/core:mobile_additional_lib_deps",
+    ] + tf_portable_proto_lib_no_runtime() + tf_portable_deps_no_runtime(),
     alwayslink = 1,
 )
 

@@ -49,6 +49,12 @@ cc_library(
     visibility = ["//visibility:public"],
 )
 
+alias(
+    name = "eigen3",
+    actual = ":eigen",
+    visibility = ["//visibility:public"],
+)
+
 filegroup(
     name = "eigen_header_files",
     srcs = EIGEN_MPL2_HEADER_FILES,
